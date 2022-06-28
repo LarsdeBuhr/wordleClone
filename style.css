@@ -126,4 +126,6 @@ header{
    visibility: hidden;
 }
 
-
+.white{
+   background-color: white;
+}

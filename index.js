@@ -39,6 +39,7 @@ function createSquares() {
       square.setAttribute("id", index + 1);
       gameBoard.appendChild(square);
    }
+   document.getElementById(String(availableSpace)).classList.add("white")
 }
 
 //color of tile
@@ -71,6 +72,7 @@ function startNewGame() {
    document.location.reload();
    word = listOfWords[Math.floor(Math.random() * listOfWords.length)];
    document.querySelector("#userInfo").classList.add("hidden");
+   
 }
 
 //Check submitted word
@@ -89,6 +91,7 @@ function handleSubmitWord() {
             const letterEl = document.getElementById(letterId);
             letterEl.classList.add("animate__flipInX");
             letterEl.style = `background-color:${tileColor}; border-color:${tileColor}`;
+            
          }, interval * index);
       });
 
@@ -120,14 +123,18 @@ function handleSubmitWord() {
 //Delete the last letter
 function handleDeleteLetter() {
    const currentWordArray = getCurrentWordArray();
+   if(availableSpace > 1 && currentWordArray.length > 0){
+      guessedWords[guessedWords.length - 1].pop();
+      
 
-   guessedWords[guessedWords.length - 1] = currentWordArray;
    const lastLetterElement = document.getElementById(
       String(availableSpace - 1)
    );
 
    lastLetterElement.textContent = "";
+   
    availableSpace = availableSpace - 1;
+   }
 }
 
 //each key gets an click event listener
@@ -137,15 +144,20 @@ keys.map((element) => {
 
       if (key === "enter") {
          handleSubmitWord();
+         document.getElementById(String(availableSpace)).classList.add("white")
          return;
       }
 
       if (key === "del") {
+         document.getElementById(String(availableSpace)).classList.remove("white")
          handleDeleteLetter();
+         document.getElementById(String(availableSpace)).classList.add("white")
+         console.log(guessedWords);
          return;
       }
 
       updateGuessedWords(key);
+      console.log(guessedWords);
    });
 });
 
@@ -156,16 +168,22 @@ function getCurrentWordArray() {
 
 //Update guessed word array
 function updateGuessedWords(letter) {
+   document.getElementById(String(availableSpace)).classList.remove("white")
+   
    document.querySelector("#userInfo").classList.add("hiddenElement");
    const currentWordArray = getCurrentWordArray();
    if (currentWordArray && currentWordArray.length < 5) {
       currentWordArray.push(letter);
       const availableSpaceElement = document.getElementById(
          String(availableSpace)
-      );
-      availableSpace = availableSpace + 1;
-      availableSpaceElement.textContent = letter;
+         );
+         availableSpace = availableSpace + 1;
+         if(getCurrentWordArray().length < 5){
+         document.getElementById(String(availableSpace)).classList.add("white")
+         }
+         availableSpaceElement.textContent = letter;
    }
 }
 
 createSquares();
+
